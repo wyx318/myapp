@@ -30,6 +30,7 @@
       subtext: '十年专注'
     },
     series: [{
+      name: '确诊人数',
       type: 'map',//告诉echarts去渲染一个地图
       map: 'china',//告诉echarts要去渲染中国地图
       label: {
@@ -77,7 +78,10 @@
         symbol: 'rect',
         color: ['#ffc0b1', '#9c0505']
       },
-    }]
+    }],
+    tooltip: {
+      trigger: 'item'
+    }
   };
   export default {
     name: 'HelloWorld',
@@ -95,7 +99,7 @@
             console.log(data)
             let list = data.data.list.map(item => ({name: item.name, value: item.value}))
             option.series[0].data = list
-            this.mychart.setOption(option)
+            this.mychart.setOption(option)// 这行代码执行的前提是 Dom 渲染完成 只有dom渲染完成 才能够执行 echarts初始化
           }
         })
       }
