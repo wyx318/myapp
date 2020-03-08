@@ -8,6 +8,7 @@
 <script>
   import echarts from 'echarts'
   import 'echarts/map/js/china.js'
+  import jsonp from 'jsonp'
   // const option = {
   //   xAxis: {
   //     type: 'category',
@@ -50,7 +51,8 @@
         itemStyle: {
           areaColor: "#66a9ec"
         }
-      }
+      },
+      data: [] //用来展示 后台给的数据
     }],
     visualMap: [{
       //状态
@@ -68,16 +70,36 @@
       ],
       // align: 'right' 控制方块的位置 默认是left
       // orient: 'horizontal'  默认竖直显示
-			//left right 这些属性控制 分段的位置
-			// showLable :false //显示方块 后面的数字
+      //left right 这些属性控制 分段的位置
+      // showLable :false //显示方块 后面的数字
+      inRange: {
+        //控制方块的颜色等属性
+        symbol: 'rect',
+        color: ['#ffc0b1', '#9c0505']
+      },
     }]
   };
   export default {
     name: 'HelloWorld',
     mounted() {
-      let mychart = echarts.init(this.$refs.mapbox);
-      mychart.setOption(option)
+      this.getDate()
+      this.mychart = echarts.init(this.$refs.mapbox);
+      this.mychart.setOption(option)
     },
+    methods: {
+      getDate() {
+        // eslint-disable-next-line no-unused-vars
+        jsonp('https://interface.sina.cn/news/wap/fymap2020_data.d.json?_=1580892522427&callback=__jp0', {}, (err, data) => {
+          if (!err) {
+            //代表请求数据成功
+            console.log(data)
+            let list = data.data.list.map(item => ({name: item.name, value: item.value}))
+            option.series[0].data = list
+            this.mychart.setOption(option)
+          }
+        })
+      }
+    }
   }
 </script>
 
